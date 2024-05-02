@@ -1,0 +1,64 @@
+{
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.18" ,
+	"omnipay/tests":"*",
+        "composer/installers":"*",
+        "karneaud/swagger-php-generator": "dev-dev",
+        "karneaud/swagger-php-generator-template": "dev-main",
+        "oomphinc/composer-installers-extender": "*",
+        "http-interop/http-factory-guzzle": "dev-master",
+        "symfony/http-client": "5.4.x-dev"
+    },
+    "name":"karneaud/omnipay-rotessa",
+    "minimum-stability": "dev",
+    "repositories": {
+        "swagger-php-generator": {
+            "type": "git",
+            "url": "git@github.com:karneaud/swagger-php-generator.git"
+        },
+        "swagger-php-generator-template": {
+            "type": "git",
+            "url": "https://github.com/karneaud/swagger-generator-template.git"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true,
+            "composer/installers": true,
+            "oomphinc/composer-installers-extender": true
+        }
+    },
+    "extra": {
+        "symfony": {
+            "allow-contrib": "true"
+        },
+        "installer-types":["template"],
+          "installer-paths": {
+            "./template": ["karneaud/swagger-php-generator-template"]
+          }
+        
+    },
+    "require": {
+        "php": ">=7.4 || ^8.0",
+        "php-http/discovery": "*",
+	    "omnipay/common":"*"
+    },
+    "scripts": {
+        "generate": [
+            "generate"
+        ],
+        "tests": [
+            "phpunit"
+        ]
+    },
+    "autoload": {
+        "psr-4": {
+            "Omnipay\\Rotessa\\": "src/Omnipay/Rotessa"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Omnipay\\Rotessa\\Test\\": "tests/"
+        }
+    }
+}
