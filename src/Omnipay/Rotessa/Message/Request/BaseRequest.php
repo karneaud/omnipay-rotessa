@@ -57,7 +57,8 @@ class BaseRequest extends AbstractRequest implements RequestInterface
     public function sendData($data) :ResponseInterface {
         $headers = [
                 'Content-Type' => 'application/json',
-                'Accept' => 'application/json'
+                'Accept' => 'application/json',
+                'Authorization' => "Token token={$this->api_key}"
         ];
 
        $this->sendRequest(
