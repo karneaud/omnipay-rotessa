@@ -7,3 +7,12 @@ Connection: keep-alive
 Cache-Control: no-cache, no-store
 Access-Control-Max-Age: 300
 Access-Control-Allow-Credentials: true
+
+{
+    "errors":[
+        {
+            "error_code": "not_found_error",
+            "error_message": "No customer was found with id=123123124"
+        }
+    ]
+}
