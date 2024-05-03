@@ -12,7 +12,7 @@ class PostCustomersShowWithCustomIdentifier extends BaseRequest implements Reque
   protected static $model = 'CustomersShowWithCustomIdentifierBody';
 
 
-    public function setCustom_identifier(string $value) {
+  public function setCustom_identifier(string $value) {
     $this->setParameter('custom_identifier',$value);  
   }
-  }
+}
