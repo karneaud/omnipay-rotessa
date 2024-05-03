@@ -13,9 +13,21 @@ abstract class AbstractRequest extends Request implements RequestInterface
     protected $api_version;
     protected $method = 'GET';
     protected $endpoint;
+    protected $api_key;
     
+    public function setApiKey(string $value) {
+        $this->api_key = $value;
+    }
+
     public function getData() {
-        return $this->getParameters();
+        try {
+            if(empty($this->api_key)) throw new \Exception('No Api Key Found!');
+            $this->validate( ...array_keys($data = $this->getParameters()));
+        } catch (\Throwable $th) {
+            throw new \Omnipay\Rotessa\Exception\ValidationException($th->getMessage() , 600, $th);
+        }
+
+        return (array) $data;
     }
 
     abstract public function sendData($data) : ResponseInterface;
