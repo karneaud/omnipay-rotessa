@@ -11,10 +11,11 @@ class BaseRequestTest extends TestCase
 {
     /** @var BaseRequest */
     private $baseRequest;
+    private $api_key = 1234567890;
 
     protected function setUp(): void
     {
-        $this->baseRequest = new BaseRequest($this->getHttpClient(), $this->getHttpRequest(), ['data'=>'bar', 'test_mode' => true ]);
+        $this->baseRequest = new BaseRequest($this->getHttpClient(), $this->getHttpRequest(), ['data'=>'bar', 'test_mode' => true, 'api_key' => $this->api_key ]);
     }
 
     public function testImplementsRequestInterface()
@@ -27,12 +28,12 @@ class BaseRequestTest extends TestCase
         $this->assertEquals('https://sandbox-api.rotessa.com/v1', $this->baseRequest->getEndpointUrl());
     }
 
-    public function testSendDataReturnsResponseInterface()
+    public function testSendDataHeaders()
     {
         $response = $this->createMock(ResponseInterface::class);
         $request = $this->getMockBuilder(BaseRequest::class)
         ->setConstructorArgs([ $this->getHttpClient(), $this->getHttpRequest(), ['data'=>'bar', 'test_mode' => true ]])
-        ->setMethods(['sendData'])  // Only replace 'sendData' method
+        ->setMethods(['sendData', 'getData'])  // Only replace 'sendData' method
         ->getMock();
         $request->expects($this->once())
         ->method('sendData')
@@ -41,4 +42,15 @@ class BaseRequestTest extends TestCase
 
         $this->assertInstanceOf(ResponseInterface::class, $response);
     }
+
+    public function testSendDataReturnsResponseInterface()
+    {
+        $this->setMockHttpResponse('../../../Mock/404.txt');
+        $response = $this->baseRequest->send();
+        $request = $this->getMockedRequests()[0];
+        $this->assertTrue($request->hasHeader('Authorization'));
+        $this->assertStringContainsString($this->api_key, array_shift($request->getHeader('Authorization')));
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+    }
+    
 }
