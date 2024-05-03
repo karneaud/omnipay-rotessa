@@ -1,29 +1,16 @@
 <?php
 namespace Omnipay\Rotessa\Message\Response;
 
-use Omnipay\Rotessa\Http\HttpResponseInterface;
+use Omnipay\Common\Message\AbstractResponse as Response;
 
-abstract class AbstractResponse implements ResponseInterface
+abstract class AbstractResponse extends Response implements ResponseInterface
 {
-    protected $http_response;
-
-    public function getData(): mixed {
-       return $this->getParameters(); 
-    }
-
-    public function getHttpResponse(): HttpResponseInterface {
-        return $this->http_response;
-    }
     
-    public function getCode() : int {
-        return (int) $this->getHttpResponse()->getStatusCode();
-    }
+    abstract public function getData();
+    
+    abstract public function getCode();
 
-    public function getMessage(): string {
-        return $this->getHttpResponse()->getReasonPhrase();
-    }
+    abstract public function getMessage();
 
-    abstract public function getParameters() : array;
-
-    abstract public function getParameter(string $key): mixed ;
+    abstract public function getParameter(string $key);
 }

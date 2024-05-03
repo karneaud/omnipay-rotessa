@@ -1,13 +1,9 @@
 <?php
 namespace Omnipay\Rotessa\Message\Response;
 
-use Omnipay\Rotessa\Http\HttpResponseInterface;
+use Omnipay\Common\Message\ResponseInterface as MessageInterface;
 
-interface ResponseInterface
+interface ResponseInterface extends MessageInterface
 {
-    public function getData(): mixed;
-    public function getHttpResponse(): HttpResponseInterface;
-    public function getCode() : int;
-    public function getMessage(): string;
-    public function getParameter(string $key): mixed ;
- }
+    public function getParameter(string $key) ;
+}
