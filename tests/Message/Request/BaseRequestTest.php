@@ -1,6 +1,6 @@
 <?php
 
-namespace Omnipay\Rotessa\Tests;
+namespace Omnipay\Rotessa\Tests\Message\Request;
 
 use Omnipay\Tests\TestCase;
 use Omnipay\Common\Message\RequestInterface;
@@ -14,7 +14,7 @@ class BaseRequestTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->baseRequest = new BaseRequest(['data'=>'bar', 'test_mode' => true ], $this->getHttpClient(), $this->getHttpRequest());
+        $this->baseRequest = new BaseRequest($this->getHttpClient(), $this->getHttpRequest(), ['data'=>'bar', 'test_mode' => true ]);
     }
 
     public function testImplementsRequestInterface()
@@ -31,7 +31,7 @@ class BaseRequestTest extends TestCase
     {
         $response = $this->createMock(ResponseInterface::class);
         $request = $this->getMockBuilder(BaseRequest::class)
-        ->setConstructorArgs([['data'=>'bar', 'test_mode' => true ], $this->getHttpClient(), $this->getHttpRequest()])
+        ->setConstructorArgs([ $this->getHttpClient(), $this->getHttpRequest(), ['data'=>'bar', 'test_mode' => true ]])
         ->setMethods(['sendData'])  // Only replace 'sendData' method
         ->getMock();
         $request->expects($this->once())
