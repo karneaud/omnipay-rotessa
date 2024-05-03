@@ -2,6 +2,7 @@
 namespace Omnipay\Rotessa\Message\Request;
 
 use Omnipay\Common\Http\ClientInterface;
+use Omnipay\Rotessa\Message\Response\BaseResponse;
 use Omnipay\Rotessa\Message\Request\RequestInterface;
 use Omnipay\Rotessa\Message\Response\ResponseInterface;
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
@@ -15,29 +16,29 @@ class BaseRequest extends AbstractRequest implements RequestInterface
     const ENVIRONMENT_SANDBOX = 'sandbox-api'; 
     const ENVIRONMENT_LIVE = 'api';
 
-    function __construct($model, ClientInterface $http_client = null, HttpRequest $http_request ) {
+    function __construct(ClientInterface $http_client = null, HttpRequest $http_request, $model ) {
         parent::__construct($http_client, $http_request );
         $this->initialize($model);
     }
 
     protected function sendRequest(string $method, string $endpoint, array $headers = [], array $data = [])
     {
-        $request = $this->httpClient->createRequest($method, $endpoint);
-
-        foreach ($headers as $header => $value) {
-            $request = $request->withHeader($header, $value);
-        }
-
-        $request = $method == 'GET' ? $request : $request->withBody($streamFactory->createStream(json_encode($data)));
-        
-        $this->response = $this->httpClient->sendRequest($request);
+        /**
+         * @param $method
+         * @param $uri
+         * @param array $headers
+         * @param string|resource|StreamInterface|null $body
+         * @param string $protocolVersion
+         * @return ResponseInterface
+         * @throws \Http\Client\Exception
+         */
+        $this->response = $this->httpClient->request($method, $endpoint, $headers, http_build_query($data) );
     }
 
 
     protected function createResponse(array $data): ResponseInterface {
-       return new BaseResponse($data);
+       return new BaseResponse($this, $data, $this->response->getStatusCode(), $this->response->getReasonPhrase());
     }
-
 
     protected function replacePlaceholder($string, $array) {
         $pattern = "/\{([^}]+)\}/";
@@ -59,15 +60,13 @@ class BaseRequest extends AbstractRequest implements RequestInterface
                 'Accept' => 'application/json'
         ];
 
-        print_r(['ok', $data]);
-
        $this->sendRequest(
                     $this->method,
                     $this->getEndpointUrl(),
                     $headers,
                     $data);
 
-        return $this->createResponse($this->getResponse()->getBody()->getContents());
+        return $this->createResponse(json_decode($this->getResponse()->getBody()->getContents(), true));
     }
       
     public function getEndpoint() : string {
