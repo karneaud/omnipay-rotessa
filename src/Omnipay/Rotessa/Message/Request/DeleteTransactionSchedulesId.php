@@ -10,9 +10,9 @@ class DeleteTransactionSchedulesId extends BaseRequest implements RequestInterfa
   protected $endpoint = '/transaction_schedules/{id}';
   protected $method = 'DELETE';
   protected static $model = '';
-
   
   public function setId(string $value) {
     $this->setParameter('id',$value);  
   }
+
 }
