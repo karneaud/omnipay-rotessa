@@ -54,7 +54,8 @@
     "autoload": {
         "psr-4": {
             "Omnipay\\Rotessa\\": "src/Omnipay/Rotessa"
-        }
+        },
+        "classmap": ["src/Omnipay/Rotessa/Exception/Exceptions.php"]
     },
     "autoload-dev": {
         "psr-4": {
