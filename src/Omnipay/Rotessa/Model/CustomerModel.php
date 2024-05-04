@@ -1,14 +1,17 @@
 <?php
 namespace Omnipay\Rotessa\Model;
 
-use JsonSerializable;
+use Omnipay\Rotessa\Object\Country;
+use Omnipay\Rotessa\Object\Address;
 use Omnipay\Rotessa\Model\BaseModel;
+use Omnipay\Rotessa\Object\CustomerType;
 use Omnipay\Rotessa\Model\ModelInterface;
+use Omnipay\Rotessa\Object\BankAccountType;
+use Omnipay\Rotessa\Object\AuthorizationType;
+use Omnipay\Rotessa\Exception\ValidationException;
 
 class CustomerModel extends BaseModel implements ModelInterface {
-
-    protected $properties;
-
+    
     protected $attributes = [
                     "id" => "string", 
                     "custom_identifier" => "string", 
@@ -26,14 +29,43 @@ class CustomerModel extends BaseModel implements ModelInterface {
                     "account_number" => "string", 
                     "address" => "object", 
                     "transaction_schedules" => "array", 
-                    "financial_transactions" => "array", 
+                    "financial_transactions" => "array",
+                    "active" => "bool"
             ];
-	
-    public const DATE_FORMAT = 'Y-m-d H:i:s';
+            
+	protected $defaults = ["active" => false,"customer_type" =>'Business',"bank_account_type" =>'Savings',"authorization_type" =>'Online',];
+    protected $required = ["name","email","customer_type","home_phone","phone","bank_name","institution_number","transit_number","bank_account_type","authorization_type","routing_number","account_number"];
 
-	private $_is_error = false;
+    public function validate() : bool {
+       try {
+            $country = $this->address->country;
+            if(!self::isValidCountry($country)) throw new \Exception("Invalid country!");
 
-	protected $defaults = ["custom_identifier" =>'0',"name" =>'0',"email" =>'0',"customer_type" =>'0',"home_phone" =>'0',"phone" =>'0',"bank_name" =>'0',"institution_number" =>'0',"transit_number" =>'0',"bank_account_type" =>'0',"authorization_type" =>'0',"routing_number" =>'0',"account_number" =>'0',"address" =>0,"transaction_schedules" =>0,"financial_transactions" =>0,];
+            $this->required = array_diff_key($this->required,array_flip( Country::isAmerican($country) ? ["institution_number", "transit_number"] : ["bank_account_type", "routing_number"]));
+            parent::validate();
+            if(!self::isValidCustomerType($this->getParameter('customer_type'))) throw new \Exception("Invalid customer type!");
+            if(!self::isValidBankAccountType($this->getParameter('bank_account_type'))) throw new \Exception("Invalid bank account type!");
+            if(!self::isValidAuthorizationType($this->getParameter('authorization_type'))) throw new \Exception("Invalid authorization type!");
+        } catch (\Throwable $th) {
+            throw new ValidationException($th->getMessage());
+        }
 
-    protected $required = ["custom_identifier","name","email","customer_type","home_phone","phone","bank_name","institution_number","transit_number","bank_account_type","authorization_type","routing_number","account_number","transaction_schedules","financial_transactions",];
+        return true;
+    }
+
+    public static function isValidCountry(string $country ) : bool {
+       return Country::isValidCountryCode($country) || Country::isValidCountryName($country);
+    }
+
+    public static function isValidCustomerType(string $value ) : bool {
+        return  CustomerType::isValid($value);
+    }
+
+    public static function isValidBankAccountType(string $value ) : bool {
+        return  BankAccountType::isValid($value);
+    }
+
+    public static function isValidAuthorizationType(string $value ) : bool {
+        return AuthorizationType::isValid($value);
+    }
 }
