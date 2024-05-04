@@ -9,17 +9,17 @@ class PostTransactionSchedules extends BaseRequest implements RequestInterface
   
   protected $endpoint = '/transaction_schedules';
   protected $method = 'POST';
-  protected static $model = 'TransactionSchedulesBody';
+  protected static $model = 'TransactionSchedule';
 
 
   
-    public function setCustomer_id(int $value) {
+    public function setCustomerId(int $value) {
     $this->setParameter('customer_id',$value);  
   }
     public function setAmount(string $value) {
     $this->setParameter('amount',$value);  
   }
-    public function setProcess_date(string $value) {
+    public function setProcessDate(string $value) {
     $this->setParameter('process_date',$value);  
   }
     public function setFrequency(string $value) {

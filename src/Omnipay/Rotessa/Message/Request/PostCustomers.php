@@ -15,7 +15,7 @@ class PostCustomers extends BaseRequest implements RequestInterface
     public function setId(string $value) {
     $this->setParameter('id',$value);  
   }
-    public function setCustom_identifier(string $value) {
+    public function setCustomIdentifier(string $value) {
     $this->setParameter('custom_identifier',$value);  
   }
     public function setName(string $value) {
@@ -24,43 +24,37 @@ class PostCustomers extends BaseRequest implements RequestInterface
     public function setEmail(string $value) {
     $this->setParameter('email',$value);  
   }
-    public function setCustomer_type(string $value) {
+    public function setCustomerType(string $value) {
     $this->setParameter('customer_type',$value);  
   }
-    public function setHome_phone(string $value) {
+    public function setHomePhone(string $value) {
     $this->setParameter('home_phone',$value);  
   }
     public function setPhone(string $value) {
     $this->setParameter('phone',$value);  
   }
-    public function setBank_name(string $value) {
+    public function setBankName(string $value) {
     $this->setParameter('bank_name',$value);  
   }
-    public function setInstitution_number(string $value) {
+    public function setInstitutionNumber(string $value = '') {
     $this->setParameter('institution_number',$value);  
   }
-    public function setTransit_number(string $value) {
+    public function setTransitNumber(string $value = '') {
     $this->setParameter('transit_number',$value);  
   }
-    public function setBank_account_type(string $value) {
+    public function setBankAccountType(string $value) {
     $this->setParameter('bank_account_type',$value);  
   }
-    public function setAuthorization_type(string $value) {
+    public function setAuthorizationType(string $value = '') {
     $this->setParameter('authorization_type',$value);  
   }
-    public function setRouting_number(string $value) {
+    public function setRoutingNumber(string $value = '') {
     $this->setParameter('routing_number',$value);  
   }
-    public function setAccount_number(string $value) {
+    public function setAccountNumber(string $value) {
     $this->setParameter('account_number',$value);  
   }
     public function setAddress(object $value) {
     $this->setParameter('address',$value);  
-  }
-    public function setTransaction_schedules(array $value) {
-    $this->setParameter('transaction_schedules',$value);  
-  }
-    public function setFinancial_transactions(array $value) {
-    $this->setParameter('financial_transactions',$value);  
   }
   }
