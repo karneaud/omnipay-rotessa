@@ -9,7 +9,6 @@ class PostTransactionSchedulesUpdateViaPost extends BaseRequest implements Reque
   
   protected $endpoint = '/transaction_schedules/update_via_post';
   protected $method = 'POST';
-  protected static $model = 'TransactionSchedulesUpdateViaPostBody';
 
 
   

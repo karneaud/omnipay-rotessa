@@ -1,21 +1,17 @@
 <?php
 namespace Omnipay\Rotessa\Message\Request;
-// You will need to create this BaseRequest class as abstracted from the AbstractRequest; 
-use Omnipay\Rotessa\Message\Request\BaseRequest;
+
 use Omnipay\Rotessa\Message\Request\RequestInterface;
 
-class PostTransactionSchedulesCreateWithCustomIdentifier extends BaseRequest implements RequestInterface
+class PostTransactionSchedulesCreateWithCustomIdentifier extends PostTransactionSchedules implements RequestInterface
 {
   
   protected $endpoint = '/transaction_schedules/create_with_custom_identifier';
   protected $method = 'POST';
-  protected static $model = 'TransactionSchedulesCreateWithCustomIdentifierBody';
 
-
-  
-    public function setCustomer_identifier(string $value) {
-    $this->setParameter('customer_identifier',$value);  
-  }
+    public function setCustomerId(string $value) {
+      $this->setParameter('customer_identifier',$value);  
+    }
     public function setAmount(string $value) {
     $this->setParameter('amount',$value);  
   }

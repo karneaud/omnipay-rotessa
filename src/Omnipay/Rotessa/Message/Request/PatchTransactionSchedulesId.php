@@ -9,7 +9,6 @@ class PatchTransactionSchedulesId extends BaseRequest implements RequestInterfac
   
   protected $endpoint = '/transaction_schedules/{id}';
   protected $method = 'PATCH';
-  protected static $model = 'TransactionSchedulesIdBody';
   
     public function setId(int $value) {
     $this->setParameter('id',$value);  
