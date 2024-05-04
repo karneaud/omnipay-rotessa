@@ -31,10 +31,10 @@ class Gateway extends AbstractClient implements ClientInterface {
         $class = null;
         $class_name = "Omnipay\\Rotessa\\Message\\Request\\$class_name";
         $parameters = array_merge($parameters, $this->getDefaultParameters());
-        $parameters = $class_name::hasModel() ? $class_name::getModel($parameters) : $parameters;
+        $parameters = $class_name::hasModel() ? (($parameters = ($class_name::getModel($parameters)))->validate() ? $parameters->__toArray() : null ) : $parameters;
      
         try {
-          $class = new $class_name($parameters, $this->httpClient, $this->httpRequest);
+          $class = new $class_name($this->httpClient, $this->httpRequest, $parameters);
         } catch (\Throwable $th) {
           throw $th;
         } 
