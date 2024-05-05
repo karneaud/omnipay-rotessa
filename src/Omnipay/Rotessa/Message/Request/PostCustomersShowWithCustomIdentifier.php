@@ -9,6 +9,7 @@ class PostCustomersShowWithCustomIdentifier extends BaseRequest implements Reque
   
   protected $endpoint = '/customers/show_with_custom_identifier';
   protected $method = 'POST';
+  protected static $model = null;
 
 
   public function setCustomIdentifier(string $value) {
