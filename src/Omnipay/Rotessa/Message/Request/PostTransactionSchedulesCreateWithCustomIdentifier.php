@@ -10,7 +10,7 @@ class PostTransactionSchedulesCreateWithCustomIdentifier extends PostTransaction
   protected $method = 'POST';
 
   public function setCustomerId(string $value) {
-    $this-setCustomIdentifier($value);  
+    $this->setCustomIdentifier($value);  
   }
 
   public function setCustomIdentifier(string $value) {
