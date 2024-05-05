@@ -2,6 +2,7 @@
 namespace Omnipay\Rotessa\Message\Request;
 
 use Omnipay\Common\Http\ClientInterface;
+use Omnipay\Rotessa\Http\Response\Response;
 use Omnipay\Rotessa\Message\Response\BaseResponse;
 use Omnipay\Rotessa\Message\Request\RequestInterface;
 use Omnipay\Rotessa\Message\Response\ResponseInterface;
@@ -32,11 +33,13 @@ class BaseRequest extends AbstractRequest implements RequestInterface
          * @return ResponseInterface
          * @throws \Http\Client\Exception
          */
-        $this->response = $this->httpClient->request($method, $endpoint, $headers, http_build_query($data) );
+        $response = $this->httpClient->request($method, $endpoint, $headers, json_encode($data) ) ;
+        $this->response = new Response ($response->getBody()->getContents(), $response->getStatusCode(), $response->getHeaders(), true);
     }
 
 
     protected function createResponse(array $data): ResponseInterface {
+       
        return new BaseResponse($this, $data, $this->response->getStatusCode(), $this->response->getReasonPhrase());
     }
 
@@ -67,7 +70,7 @@ class BaseRequest extends AbstractRequest implements RequestInterface
                     $headers,
                     $data);
 
-        return $this->createResponse(json_decode($this->getResponse()->getBody()->getContents(), true));
+        return $this->createResponse(json_decode($this->response->getContent(), true));
     }
       
     public function getEndpoint() : string {
