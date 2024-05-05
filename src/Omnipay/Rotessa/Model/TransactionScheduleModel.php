@@ -1,9 +1,11 @@
 <?php
 namespace Omnipay\Rotessa\Model;
 
-use JsonSerializable;
+use \DateTime;
 use Omnipay\Rotessa\Model\BaseModel;
+use Omnipay\Rotessa\Object\Frequency;
 use Omnipay\Rotessa\Model\ModelInterface;
+use Omnipay\Rotessa\Exception\ValidationException;
 
 class TransactionScheduleModel extends BaseModel implements ModelInterface {
 
@@ -11,22 +13,72 @@ class TransactionScheduleModel extends BaseModel implements ModelInterface {
 
     protected $attributes = [
                     "id" => "string", 
-                    "amount" => "string", 
+                    "amount" => "float", 
                     "comment" => "string", 
-                    "created_at" => "string", 
+                    "created_at" => "date", 
                     "financial_transactions" => "array", 
                     "frequency" => "string", 
-                    "installments" => "int", 
-                    "next_process_date" => "string", 
-                    "process_date" => "string", 
-                    "updated_at" => "string", 
+                    "installments" => "integer", 
+                    "next_process_date" => "date", 
+                    "process_date" => "date", 
+                    "updated_at" => "date", 
+                    "customer_id" => "string",
+                    "custom_identifier" => "string",
             ];
 	
-    public const DATE_FORMAT = 'Y-m-d H:i:s';
+    public const DATE_FORMAT = 'F j, Y';
 
-	private $_is_error = false;
+	protected $defaults = ["amount" =>0.00,"comment" =>' ',"financial_transactions" =>0,"frequency" =>'Once',"installments" =>1];
 
-	protected $defaults = ["amount" =>'0',"comment" =>'0',"created_at" =>'0',"financial_transactions" =>0,"frequency" =>'0',"installments" =>0,"next_process_date" =>'0',"process_date" =>'0',"updated_at" =>'0',];
+    protected $required = ["amount","comment","frequency","installments","process_date"];
 
-    protected $required = ["amount","comment","created_at","financial_transactions","frequency","installments","next_process_date","process_date","updated_at",];
+    public function validate() : bool {
+        try {
+            parent::validate();
+            if(!self::isValidDate($this->process_date)) throw new \Exception("Could not validate date ");
+            if(!self::isValidFrequency($this->frequency)) throw new \Exception("Invalid frequency");
+            if(is_null($this->customer_id) && is_null($this->custom_identifier)) throw new \Exception("customer id or custom identifier is invalid");
+        } catch (\Throwable $th) {
+            throw new ValidationException($th->getMessage());
+        }
+
+        return true;
+    }
+
+    public function jsonSerialize() : array {
+        return [ 'customer_id' => $this->customer_id ?? $this->custom_identifier, 'custom_identifier' => $this->custom_identifier ?? $this->customer_id ] + parent::jsonSerialize() ;
+    }
+
+    public function __toArray() : array {
+        return [ 'customer_id' => $this->customer_id ?? $this->custom_identifier, 'custom_identifier' => $this->custom_identifier ?? $this->customer_id ] + parent::__toArray() ;
+    }
+
+    public function initialize(array $params = [] ) {
+        $o_params = array_intersect_key(
+            $params,
+            ($attr = array_filter($this->attributes, fn($p) => $p != "date"))
+        );
+        parent::initialize($o_params);
+        $d_params = array_diff_key($params, $attr);
+        array_walk($d_params, function($v,$k) { 
+                if(self::isValidDate($v)) $this->setParameter($k, self::formatDate( $v) );
+            },  );
+           
+        return $this;
+    }
+
+    public static function isValidDate($date) : bool {
+        $d = DateTime::createFromFormat(self::DATE_FORMAT, $date);
+        // Check if the date is valid and matches the format
+        return $d && $d->format(self::DATE_FORMAT) === $date;
+    }
+
+    public static function isValidFrequency($value) : bool {
+        return Frequency::isValid($value);
+    }
+
+    protected static function formatDate($date) : string {
+        $d = new DateTime($date);
+        return $d->format(self::DATE_FORMAT);
+    }
 }
