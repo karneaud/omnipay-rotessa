@@ -12,11 +12,12 @@ class PostCustomersRequestTest extends TestCase
     /** @var PostCustomers */
     private $postCustomers;
     private $api_key = 1234567890;
+    private $parameters;
 
     protected function setUp(): void
     {
-         $this->postCustomers = new PostCustomers($this->getHttpClient(), $this->getHttpRequest(), ['test_mode' => true, 'api_key' => $this->api_key, 'customer_type' => 'Business',
-         "name" => "Test Name","home_phone" => "0000000","phone" =>" 0000000","bank_name" => "Test Bank Name","institution_number" =>"128931198" ,"transit_number" => "09129012901","bank_account_type" => 'Savings',"authorization_type" => "Online","routing_number" => "109210129" ] );
+         $this->parameters = json_decode(file_get_contents(__DIR__ . '/../../Mock/Customers/post/parameters.json'), true);
+         $this->postCustomers = new PostCustomers($this->getHttpClient(), $this->getHttpRequest(), ['test_mode' => true, 'api_key' => $this->api_key ]);
     }
 
     public function testEndpoint()
@@ -28,20 +29,17 @@ class PostCustomersRequestTest extends TestCase
     {
         
         $this->setMockHttpResponse('../../../Mock/Customers/post/200.txt');
-        $response_array = json_decode(($this->getMockHttpResponse('../../../Mock/Customers/post/200.txt'))->getBody()->getContents() , true);
-        $this->postCustomers->initialize(array_merge( $response_array, $this->postCustomers->getParameters(), ['address' => (object) $response_array['address']]));
+        $this->postCustomers->initialize(array_merge( $this->parameters, $this->postCustomers->getParameters(), ['address' => (object) $this->parameters['address']]));
         $response = $this->postCustomers->send();
         $this->assertInstanceOf(ResponseInterface::class, $response);
         $this->assertTrue($response->isSuccessful());
-        $this->assertEquals($response_array, $response->getData());
+        $this->assertEquals((array) json_decode($this->getMockHttpResponse('../../../Mock/Customers/post/200.txt')->getBody()->getContents(), true), $response->getData());
     }
 
     public function testSendFail()
     {
-        
         $this->setMockHttpResponse('../../../Mock/404.txt');
-        $response_array = json_decode(($this->getMockHttpResponse('../../../Mock/Customers/post/200.txt'))->getBody()->getContents() , true);
-        $this->postCustomers->initialize(array_merge( $response_array, $this->postCustomers->getParameters(),['address' => (object) $response_array['address']]));
+        $this->postCustomers->initialize(array_merge( $this->parameters, $this->postCustomers->getParameters(),['address' => (object) $this->parameters['address']]));
         $response = $this->postCustomers->send();
         $this->assertInstanceOf(ResponseInterface::class, $response);
         $this->assertFalse($response->isSuccessful());
