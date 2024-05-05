@@ -15,5 +15,8 @@
     <testsuite name="Requests">
       <directory>./tests/Message/Request</directory>
     </testsuite>
+    <testsuite name="Functionals">
+      <directory>./tests/Functional</directory>
+    </testsuite>
   </testsuites>
 </phpunit>
