@@ -15,6 +15,7 @@ class BaseRequestTest extends TestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
         $this->baseRequest = new BaseRequest($this->getHttpClient(), $this->getHttpRequest(), ['data'=>'bar', 'test_mode' => true, 'api_key' => $this->api_key ]);
     }
 
@@ -49,7 +50,8 @@ class BaseRequestTest extends TestCase
         $response = $this->baseRequest->send();
         $request = $this->getMockedRequests()[0];
         $this->assertTrue($request->hasHeader('Authorization'));
-        $this->assertStringContainsString($this->api_key, array_shift($request->getHeader('Authorization')));
+        $header =  $request->getHeader('Authorization');
+        $this->assertStringContainsString($this->api_key,  array_shift( $header));
         $this->assertInstanceOf(ResponseInterface::class, $response);
     }
     

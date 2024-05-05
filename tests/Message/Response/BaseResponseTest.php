@@ -13,6 +13,7 @@ class BaseResponseTest extends TestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
         $request = $this->createMock(RequestInterface::class);
         $this->baseResponse = new BaseResponse($request, ['param1' => 'value1'], 200, 'OK');
     }
