@@ -2,7 +2,6 @@
 
 namespace Omnipay\Rotessa\Model;
 
-use DateTime;
 use Omnipay\Common\ParametersTrait;
 use Omnipay\Rotessa\Model\ModelInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -43,8 +42,10 @@ abstract class AbstractModel implements ModelInterface {
         if ($parameters) {
             foreach ($this->attributes as $param => $type) {
                 $value = @$parameters[$param];
-                settype($value, $type);
-                $this->setParameter($param, $value);
+                if($value){
+                    settype($value, $type);
+                    $this->setParameter($param, $value);
+                }
             }
         }
 
