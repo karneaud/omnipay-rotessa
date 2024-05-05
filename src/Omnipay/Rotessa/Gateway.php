@@ -4,6 +4,7 @@ namespace Omnipay\Rotessa;
 use Omnipay\Rotessa\ApiTrait;
 use Omnipay\Rotessa\AbstractClient;
 use Omnipay\Rotessa\ClientInterface;
+use Omnipay\Rotessa\Message\Request\RequestInterface;
 
 class Gateway extends AbstractClient implements ClientInterface {
     
@@ -13,6 +14,8 @@ class Gateway extends AbstractClient implements ClientInterface {
 
     protected $test_mode = true;
 
+    protected $api_key;
+
     public function getName()
     {
         return 'Rotessa';
@@ -20,21 +23,24 @@ class Gateway extends AbstractClient implements ClientInterface {
 
     public function getDefaultParameters() : array
     {
-        return array('api_key' => '1234567890', 'test_mode' => $this->test_mode );
+        return array_merge($this->default_parameters, array('api_key' => $this->api_key, 'test_mode' => $this->test_mode ) );
     }
 
     public function setTestMode($value) {
           $this->test_mode = $value;
     }
 
+    public function getTestMode() {
+        return $this->test_mode;
+    }
+
     protected function createRequest($class_name, ?array $parameters = [] ) :RequestInterface {
         $class = null;
         $class_name = "Omnipay\\Rotessa\\Message\\Request\\$class_name";
-        $parameters = array_merge($parameters, $this->getDefaultParameters());
         $parameters = $class_name::hasModel() ? (($parameters = ($class_name::getModel($parameters)))->validate() ? $parameters->__toArray() : null ) : $parameters;
      
         try {
-          $class = new $class_name($this->httpClient, $this->httpRequest, $parameters);
+          $class = new $class_name($this->httpClient, $this->httpRequest, $this->getDefaultParameters() + $parameters );
         } catch (\Throwable $th) {
           throw $th;
         } 
@@ -42,16 +48,24 @@ class Gateway extends AbstractClient implements ClientInterface {
         return $class;
     }
 
-    function canAuthorize() {
-        return true;
+    function setApiKey($value) {
+        $this->api_key = $value;
     }
 
-    function canCapture() {
-        return false;
+    function getApiKey() {
+        return $this->api_key;
     }
 
-    function authorize() {
+    function authorize(array $options = []) : RequestInterface {
+        return $this->postCustomers($options);
+    }
 
+    function capture(array $options = []) : RequestInterface {
+        return array_key_exists('custom_identifier', $options)? $this->postTransactionSchedulesCreateWithCustomIdentifier($options) : $this->postTransactionSchedules($options) ;
+    }
+
+    function fetchTransaction($id = null) : RequestInterface {
+        return $this->getTransactionSchedulesId(compact('id'));
     }
 
 }
