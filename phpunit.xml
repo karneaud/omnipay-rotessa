@@ -6,8 +6,14 @@
     </include>
   </coverage>
   <testsuites>
-    <testsuite name="Omnipay Rotessa Test Suite">
+    <testsuite name="Suite">
       <directory>./tests</directory>
+    </testsuite>
+    <testsuite name="Models">
+      <directory>./tests/Model</directory>
+    </testsuite>
+    <testsuite name="Requests">
+      <directory>./tests/Message/Request</directory>
     </testsuite>
   </testsuites>
 </phpunit>
