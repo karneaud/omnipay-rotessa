@@ -9,22 +9,12 @@ class PostTransactionSchedulesCreateWithCustomIdentifier extends PostTransaction
   protected $endpoint = '/transaction_schedules/create_with_custom_identifier';
   protected $method = 'POST';
 
-    public function setCustomerId(string $value) {
-      $this->setParameter('customer_identifier',$value);  
-    }
-    public function setAmount(string $value) {
-    $this->setParameter('amount',$value);  
+  public function setCustomerId(string $value) {
+    $this-setCustomIdentifier($value);  
   }
-    public function setProcess_date(string $value) {
-    $this->setParameter('process_date',$value);  
+
+  public function setCustomIdentifier(string $value) {
+    $this->setParameter('custom_identifier',$value);  
   }
-    public function setFrequency(string $value) {
-    $this->setParameter('frequency',$value);  
-  }
-    public function setInstallments(int $value) {
-    $this->setParameter('installments',$value);  
-  }
-    public function setComment(string $value) {
-    $this->setParameter('comment',$value);  
-  }
-  }
+
+}
