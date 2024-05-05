@@ -1,7 +1,6 @@
 <?php
 namespace Omnipay\Rotessa\Model;
 
-use JsonSerializable;
 use Omnipay\Rotessa\Model\BaseModel;
 use Omnipay\Rotessa\Model\ModelInterface;
 
