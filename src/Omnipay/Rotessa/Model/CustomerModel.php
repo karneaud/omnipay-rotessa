@@ -41,7 +41,7 @@ class CustomerModel extends BaseModel implements ModelInterface {
             $country = $this->address->country;
             if(!self::isValidCountry($country)) throw new \Exception("Invalid country!");
 
-            $this->required = array_diff_key($this->required,array_flip( Country::isAmerican($country) ? ["institution_number", "transit_number"] : ["bank_account_type", "routing_number"]));
+            $this->required = array_diff($this->required, Country::isAmerican($country) ? ["institution_number", "transit_number"] : ["bank_account_type", "routing_number"]);
             parent::validate();
             if(!self::isValidCustomerType($this->getParameter('customer_type'))) throw new \Exception("Invalid customer type!");
             if(!self::isValidBankAccountType($this->getParameter('bank_account_type'))) throw new \Exception("Invalid bank account type!");
