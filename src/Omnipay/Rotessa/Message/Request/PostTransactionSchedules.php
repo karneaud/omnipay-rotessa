@@ -16,10 +16,6 @@ class PostTransactionSchedules extends BaseRequest implements RequestInterface
     public function setCustomerId(string $value) {
     $this->setParameter('customer_id',$value);  
   }
-
-  public function setCustomIdentifier(string $value) {
-    $this->setCustomerId( $value);  
-  }
     public function setProcessDate(string $value) {
     $this->setParameter('process_date',$value);  
   }
