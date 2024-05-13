@@ -37,8 +37,7 @@ class Gateway extends AbstractClient implements ClientInterface {
     protected function createRequest($class_name, ?array $parameters = [] ) :RequestInterface {
         $class = null;
         $class_name = "Omnipay\\Rotessa\\Message\\Request\\$class_name";
-        $parameters = $class_name::hasModel() ? (($parameters = ($class_name::getModel($parameters)))->validate() ? $parameters->__toArray() : null ) : $parameters;
-     
+        $parameters = $class_name::hasModel() ? (($parameters = ($class_name::getModel($parameters)))->validate() ? $parameters->jsonSerialize() : null ) : $parameters;
         try {
           $class = new $class_name($this->httpClient, $this->httpRequest, $this->getDefaultParameters() + $parameters );
         } catch (\Throwable $th) {
@@ -61,7 +60,11 @@ class Gateway extends AbstractClient implements ClientInterface {
     }
 
     function capture(array $options = []) : RequestInterface {
-        return array_key_exists('custom_identifier', $options)? $this->postTransactionSchedulesCreateWithCustomIdentifier($options) : $this->postTransactionSchedules($options) ;
+        return array_key_exists('customer_id', $options)? $this->postTransactionSchedules($options) : $this->postTransactionSchedulesCreateWithCustomIdentifier($options)  ;
+    }
+
+    function updateCustomer(array $options) : RequestInterface {
+        return $this->patchCustomerId($options); 
     }
 
     function fetchTransaction($id = null) : RequestInterface {
