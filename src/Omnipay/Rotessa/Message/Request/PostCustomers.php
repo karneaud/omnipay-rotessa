@@ -54,7 +54,7 @@ class PostCustomers extends BaseRequest implements RequestInterface
     public function setAccountNumber(string $value) {
     $this->setParameter('account_number',$value);  
   }
-    public function setAddress(object $value) {
+    public function setAddress(array $value) {
     $this->setParameter('address',$value);  
   }
   }
