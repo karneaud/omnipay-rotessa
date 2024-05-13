@@ -32,8 +32,17 @@ abstract class AbstractModel implements ModelInterface {
         return json_encode($this); 
     }
 
+    public function toString() : string {
+        return $this->__toString();
+    }
+    
     public function __toArray() : array {
         return $this->getParameters();
+    }
+
+
+    public function toArray() : array {
+        return $this->__toArray();
     }
 
     public function initialize(array $params = []) {
