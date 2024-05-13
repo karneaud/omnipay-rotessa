@@ -19,6 +19,6 @@ class BaseModel extends AbstractModel implements ModelInterface {
     }
    
     public function jsonSerialize() : array {
-        return array_intersect_key($this->getParameters(), array_flip($this->required) );
+        return array_intersect_key($this->toArray(), array_flip($this->required) );
     }
 }
