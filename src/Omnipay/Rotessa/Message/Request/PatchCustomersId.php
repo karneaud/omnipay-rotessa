@@ -9,7 +9,7 @@ class PatchCustomersId extends BaseRequest implements RequestInterface
   
   protected $endpoint = '/customers/{id}';
   protected $method = 'PATCH';
-  protected static $model = 'Customer';
+  protected static $model = 'CustomerPatch';
   
     public function setId(string $value) {
     $this->setParameter('id',$value);  
@@ -53,7 +53,7 @@ class PatchCustomersId extends BaseRequest implements RequestInterface
     public function setAccountNumber(string $value) {
     $this->setParameter('account_number',$value);  
   }
-    public function setAddress(object $value) {
+    public function setAddress(array $value) {
     $this->setParameter('address',$value);  
   }
     public function setTransactionSchedules(array $value) {
