@@ -34,7 +34,7 @@ class CustomerModel extends BaseModel implements ModelInterface {
             ];
             
 	protected $defaults = ["active" => false,"customer_type" =>'Business',"bank_account_type" =>'Savings',"authorization_type" =>'Online',];
-    protected $required = ["name","email","customer_type","home_phone","phone","bank_name","institution_number","transit_number","bank_account_type","authorization_type","routing_number","account_number"];
+    protected $required = ["name","email","customer_type","home_phone","phone","bank_name","institution_number","transit_number","bank_account_type","authorization_type","routing_number","account_number","address"];
 
     public function validate() : bool {
        try {
@@ -43,6 +43,10 @@ class CustomerModel extends BaseModel implements ModelInterface {
 
             $this->required = array_diff($this->required, Country::isAmerican($country) ? ["institution_number", "transit_number"] : ["bank_account_type", "routing_number"]);
             parent::validate();
+            if(Country::isCanadian($country) ) {
+                if(!self::isValidTransitNumber((int) $this->getParameter('transit_number'))) throw new \Exception("Invalid transit number!");
+                if(!self::isValidInstitutionNumber((int) $this->getParameter('institution_number'))) throw new \Exception("Invalid institution number!");
+            }
             if(!self::isValidCustomerType($this->getParameter('customer_type'))) throw new \Exception("Invalid customer type!");
             if(!self::isValidBankAccountType($this->getParameter('bank_account_type'))) throw new \Exception("Invalid bank account type!");
             if(!self::isValidAuthorizationType($this->getParameter('authorization_type'))) throw new \Exception("Invalid authorization type!");
@@ -57,6 +61,14 @@ class CustomerModel extends BaseModel implements ModelInterface {
        return Country::isValidCountryCode($country) || Country::isValidCountryName($country);
     }
 
+    public static function isValidTransitNumber(int $value ) : bool {
+        return strlen((string) $value) == 5;
+    }
+
+    public static function isValidInstitutionNumber(int $value ) : bool {
+        return strlen((string) $value) == 3;
+    }
+
     public static function isValidCustomerType(string $value ) : bool {
         return  CustomerType::isValid($value);
     }
@@ -67,5 +79,9 @@ class CustomerModel extends BaseModel implements ModelInterface {
 
     public static function isValidAuthorizationType(string $value ) : bool {
         return AuthorizationType::isValid($value);
+    }
+
+    public function toArray() : array {
+        return [ 'address' => (array) $this->getParameter('address') ] + parent::toArray();
     }
 }
