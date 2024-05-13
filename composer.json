@@ -29,7 +29,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Omnipay\\Rotessa\\": "src/Omnipay/Rotessa"
+            "Omnipay\\Rotessa\\": "src/Omnipay/Rotessa/"
         },
         "classmap": ["src/Omnipay/Rotessa/Exception/Exceptions.php"]
     },
