@@ -46,22 +46,22 @@ class TransactionScheduleModel extends BaseModel implements ModelInterface {
     }
 
     public function jsonSerialize() : array {
-        return [ 'customer_id' => $this->customer_id ?? $this->custom_identifier, 'custom_identifier' => $this->custom_identifier ?? $this->customer_id ] + parent::jsonSerialize() ;
+        return parent::jsonSerialize() ;
     }
 
     public function __toArray() : array {
-        return [ 'customer_id' => $this->customer_id ?? $this->custom_identifier, 'custom_identifier' => $this->custom_identifier ?? $this->customer_id ] + parent::__toArray() ;
+        return parent::__toArray() ;
     }
 
     public function initialize(array $params = [] ) {
         $o_params = array_intersect_key(
-            $params,
+            $params = array_intersect_key($params, $this->attributes),
             ($attr = array_filter($this->attributes, fn($p) => $p != "date"))
         );
         parent::initialize($o_params);
         $d_params = array_diff_key($params, $attr);
         array_walk($d_params, function($v,$k) { 
-                if(self::isValidDate($v)) $this->setParameter($k, self::formatDate( $v) );
+                $this->setParameter($k, self::formatDate( $v) );
             },  );
            
         return $this;
