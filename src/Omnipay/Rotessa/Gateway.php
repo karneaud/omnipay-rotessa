@@ -64,7 +64,7 @@ class Gateway extends AbstractClient implements ClientInterface {
     }
 
     function updateCustomer(array $options) : RequestInterface {
-        return $this->patchCustomerId($options); 
+        return $this->patchCustomersId($options); 
     }
 
     function fetchTransaction($id = null) : RequestInterface {
