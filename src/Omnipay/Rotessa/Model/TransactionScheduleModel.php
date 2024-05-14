@@ -46,7 +46,7 @@ class TransactionScheduleModel extends BaseModel implements ModelInterface {
     }
 
     public function jsonSerialize() : array {
-        return parent::jsonSerialize() ;
+        return ['customer_id' => $this->getParameter('customer_id'), 'custom_identifier' => $this->getParameter('custom_identifier') ] + parent::jsonSerialize() ;
     }
 
     public function __toArray() : array {
