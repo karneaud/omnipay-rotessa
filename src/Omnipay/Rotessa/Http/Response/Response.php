@@ -14,7 +14,7 @@ class Response extends JsonResponse
     {
         
        parent::__construct($data , $status, $headers, true);
-
+      
         if(array_key_exists('errors',$data = json_decode( $this->content, true) )) {
             $data = $data['errors'][0];
             $this->reason_phrase = $data['error_message'] ;
@@ -23,10 +23,10 @@ class Response extends JsonResponse
     }
 
     public function getReasonPhrase()  {
-        $this->reason_phrase;
+       return $this->reason_phrase;
     }
 
     public function getReasonCode() {
-        $this->reason_code;
+       return $this->reason_code;
     }
 }
